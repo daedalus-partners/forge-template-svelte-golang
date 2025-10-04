@@ -12,7 +12,7 @@ RUN bun run build
 FROM golang:1.25.1-alpine AS backend
 WORKDIR /src
 COPY backend/ ./backend/
-COPY --from=web /app/dist ./backend/static
+COPY --from=web /app/build ./backend/static
 WORKDIR /src/backend
 RUN go mod download
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /out/app ./cmd/app

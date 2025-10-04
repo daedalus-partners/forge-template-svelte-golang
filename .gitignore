@@ -1,0 +1,24 @@
+# General
+.DS_Store
+.env
+.env.*
+*.log
+
+# Node
+node_modules/
+web/node_modules/
+web/.svelte-kit/
+web/.vite/
+web/dist/
+web/build/
+
+# Go
+backend/app
+backend/bin/
+backend/*.exe
+backend/*.out
+
+# Bun
+web/.bun/
+
+
