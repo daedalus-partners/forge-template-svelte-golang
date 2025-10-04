@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Forge Template App</title>
+    <style>
+      :root {
+        --color-background:#111112; --color-surface:#151516; --color-text:#F2F2F2;
+        --radius-md:8px; --space-4:16px; color-scheme: dark;
+      }
+      html,body,#app { height: 100%; margin: 0; background: var(--color-background); color: var(--color-text); }
+      .panel { background: var(--color-surface); border-radius: var(--radius-md); padding: var(--space-4); }
+      .row { display:flex; gap:8px; align-items:center; }
+      .col { display:flex; flex-direction:column; gap:8px; }
+      .muted { opacity:.7 }
+      .container { max-width: 880px; margin: 24px auto; padding: 0 12px; }
+      button { padding: 6px 10px; border-radius: 6px; border:1px solid #0002; background:#000; color:#fff }
+      input { padding: 6px 8px; border-radius: 6px; border:1px solid #0002; background: transparent; color: inherit }
+      pre { background: var(--color-surface); padding: 12px; border-radius: 8px; overflow:auto }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+  </html>
+
+
