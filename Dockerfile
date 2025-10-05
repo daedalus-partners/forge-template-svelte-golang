@@ -6,13 +6,16 @@ WORKDIR /app
 COPY web/package.json ./
 RUN bun install
 COPY web/ ./
-RUN bun run build
+RUN bun run build && \
+    mkdir -p /out && \
+    if [ -d dist ]; then cp -r dist/* /out/; else cp -r build/* /out/; fi
 
 # 2) Build Go server with embedded static
 FROM golang:1.25.1-alpine AS backend
 WORKDIR /src
 COPY backend/ ./backend/
-COPY --from=web /app/build ./backend/static
+# Copy compiled static assets, supporting Vite (dist) or SvelteKit (build)
+COPY --from=web /out ./backend/static
 WORKDIR /src/backend
 RUN go mod download
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /out/app ./cmd/app
