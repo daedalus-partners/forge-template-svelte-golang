@@ -10,19 +10,33 @@ import (
 
 // API-only server; static assets are served by the separate web service
 
-type infoResponse struct {
-	Message string            `json:"message"`
-	Email   string            `json:"email"`
-	Env     map[string]string `json:"env"`
+type whoamiResponse struct {
+	Email string `json:"email"`
+}
+
+type envResponse struct {
+	Env map[string]string `json:"env"`
 }
 
 func main() {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/api/info", func(w http.ResponseWriter, r *http.Request) {
+	// whoami: returns Cloudflare Access authenticated email (empty if not present)
+	mux.HandleFunc("/api/whoami", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
 		email := r.Header.Get("Cf-Access-Authenticated-User-Email")
-		if email == "" {
-			email = "(unknown; ensure Cloudflare Access is configured)"
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(whoamiResponse{Email: email})
+	})
+
+	// env: returns all environment variables visible to the process
+	mux.HandleFunc("/api/env", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			return
 		}
 		env := map[string]string{}
 		for _, e := range os.Environ() {
@@ -33,11 +47,13 @@ func main() {
 			}
 		}
 		w.Header().Set("Content-Type", "application/json")
-		_ = json.NewEncoder(w).Encode(infoResponse{
-			Message: "This is a Forge test application.",
-			Email:   email,
-			Env:     env,
-		})
+		_ = json.NewEncoder(w).Encode(envResponse{Env: env})
+	})
+
+	// healthz for basic container health
+	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("ok"))
 	})
 
 	// No root handler; unknown routes return 404. Only /api/* is served.
