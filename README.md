@@ -83,4 +83,4 @@ Visit http://localhost:8080
 
 - Keep Compose at repo root for Forge discovery.
 - Avoid renaming the `web` service unless you also update your Forge connectors.
-
+.
