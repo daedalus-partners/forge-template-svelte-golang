@@ -5,9 +5,16 @@ services:
       dockerfile: backend/Dockerfile
     environment:
       - PORT=8080
+
   web:
     build:
       context: .
       dockerfile: web/Dockerfile
+    depends_on:
+      - api
+    ports:
+      - "8080:80"
+    networks:
+      - default
 
 
