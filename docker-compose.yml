@@ -12,8 +12,6 @@ services:
       dockerfile: web/Dockerfile
     depends_on:
       - api
-    ports:
-      - "8080:80"
     networks:
       - default
 

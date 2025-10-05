@@ -25,7 +25,7 @@ Forge is a small platform to deploy GitHub repos via Docker Compose, fronted by 
   - Serves `/api/info` with `{ message, email, env }`
   - Listens on `PORT` (default 8080)
 - `Dockerfile` – Multi-stage build: Bun (Svelte) → Go (embed) → alpine runtime
-- `docker-compose.yml` – Defines a single service `web`; Forge will inject Traefik labels via an override
+- `docker-compose.yml` – Defines `api` and `web`; Forge will inject Traefik labels via an override
 - `design_guidelines.md` – Dark-only tokens and usage patterns
 
 ### Requirements
@@ -63,11 +63,10 @@ Forge supports env-specific variables. At deploy time the platform writes `.env.
 
 ### Local development
 
-Option 1: Docker
+Option 1: Docker Compose (dev override)
 
 ```
-docker build -t forge-template .
-docker run --rm -p 8080:8080 forge-template
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
 ```
 
 Option 2: Bun + Go (outside Docker)
