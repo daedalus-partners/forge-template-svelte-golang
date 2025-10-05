@@ -1,15 +1,32 @@
 services:
-  web:
+  api:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: backend/Dockerfile
     environment:
       - PORT=8080
     networks:
       - traefik_proxy
     labels:
-      - traefik.enable=false
-    # expose app on connectors via Forge override file
+      - traefik.enable=true
+      - traefik.http.routers.templateapi.rule=Host(`${DOMAIN_APP}`) && PathPrefix(`/api`)
+      - traefik.http.services.templateapi.loadbalancer.server.port=8080
+      - traefik.http.routers.templateapi.service=templateapi
+      - traefik.http.routers.templateapi-dev.rule=Host(`${DOMAIN_DEV_APP}`) && PathPrefix(`/api`)
+      - traefik.http.routers.templateapi-dev.service=templateapi
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    networks:
+      - traefik_proxy
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.templateweb.rule=Host(`${DOMAIN_APP}`)
+      - traefik.http.services.templateweb.loadbalancer.server.port=80
+      - traefik.http.routers.templateweb.service=templateweb
+      - traefik.http.routers.templateweb-dev.rule=Host(`${DOMAIN_DEV_APP}`)
+      - traefik.http.routers.templateweb-dev.service=templateweb
 
 networks:
   traefik_proxy:
